@@ -6,6 +6,7 @@ class Job {
   final String? resultImageUrl;
   final String status;
   final String? errorMessage;
+  final String model;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -16,6 +17,7 @@ class Job {
     this.resultImageUrl,
     required this.status,
     this.errorMessage,
+    this.model = 'seedream',
     required this.createdAt,
     required this.updatedAt,
   });
@@ -28,6 +30,7 @@ class Job {
       resultImageUrl: json['result_image_url'] as String?,
       status: json['status'] as String,
       errorMessage: json['error_message'] as String?,
+      model: json['model'] as String? ?? 'seedream',
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -41,6 +44,7 @@ class Job {
       'result_image_url': resultImageUrl,
       'status': status,
       'error_message': errorMessage,
+      'model': model,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

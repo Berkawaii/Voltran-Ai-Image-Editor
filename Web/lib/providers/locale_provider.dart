@@ -75,6 +75,13 @@ class AppLocalizations {
       'no_images_compare': 'No images to compare',
       'created_by': 'Created by',
       'view_github': 'View on GitHub',
+      'select_model': 'Select AI Model',
+      'model_seedream': 'Seedream V4',
+      'model_seedream_desc': 'Fast and efficient image editing',
+      'model_nano_banana': 'Nano Banana',
+      'model_nano_banana_desc': 'Quick edits with smaller model',
+      'model_flux_dev': 'FLUX Dev',
+      'model_flux_dev_desc': 'Advanced image-to-image transformation',
     },
     'tr': {
       'app_title': 'Yapay Zeka Görsel Editörü',
@@ -118,6 +125,13 @@ class AppLocalizations {
       'no_images_compare': 'Karşılaştırılacak görsel yok',
       'created_by': 'Oluşturan',
       'view_github': 'GitHub\'da Görüntüle',
+      'select_model': 'Yapay Zeka Modeli Seç',
+      'model_seedream': 'Seedream V4',
+      'model_seedream_desc': 'Hızlı ve verimli görsel düzenleme',
+      'model_nano_banana': 'Nano Banana',
+      'model_nano_banana_desc': 'Küçük model ile hızlı düzenlemeler',
+      'model_flux_dev': 'FLUX Dev',
+      'model_flux_dev_desc': 'Gelişmiş görsel dönüştürme',
     },
   };
 
@@ -163,6 +177,13 @@ class AppLocalizations {
   String get noImagesCompare => translate('no_images_compare');
   String get createdBy => translate('created_by');
   String get viewGithub => translate('view_github');
+  String get selectModel => translate('select_model');
+  String get modelSeedream => translate('model_seedream');
+  String get modelSeedreamDesc => translate('model_seedream_desc');
+  String get modelNanoBanana => translate('model_nano_banana');
+  String get modelNanoBananaDesc => translate('model_nano_banana_desc');
+  String get modelFluxDev => translate('model_flux_dev');
+  String get modelFluxDevDesc => translate('model_flux_dev_desc');
 }
 
 class _AppLocalizationsDelegate

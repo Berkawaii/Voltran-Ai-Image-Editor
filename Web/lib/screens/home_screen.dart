@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Job? _currentJob;
   bool _isProcessing = false;
   String? _error;
+  String _selectedModel = 'seedream'; // Default model
 
   @override
   void dispose() {
@@ -69,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         imageBytes: _selectedImageBytes!,
         fileName: _selectedImageName!,
         prompt: _promptController.text.trim(),
+        model: _selectedModel,
       );
 
       setState(() {
@@ -815,9 +817,125 @@ class _HomeScreenState extends State<HomeScreen> {
                 contentPadding: const EdgeInsets.all(16),
               ),
             ),
+            const SizedBox(height: 20),
+            _buildModelSelector(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildModelSelector() {
+    final locale = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final models = [
+      {
+        'value': 'seedream',
+        'name': locale.modelSeedream,
+        'desc': locale.modelSeedreamDesc,
+        'icon': Icons.flash_on,
+      },
+      {
+        'value': 'nano_banana',
+        'name': locale.modelNanoBanana,
+        'desc': locale.modelNanoBananaDesc,
+        'icon': Icons.speed,
+      },
+      {
+        'value': 'flux_dev',
+        'name': locale.modelFluxDev,
+        'desc': locale.modelFluxDevDesc,
+        'icon': Icons.auto_awesome,
+      },
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          locale.selectModel,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: isDark ? Colors.grey[100] : const Color(0xFF1F2937),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1F2937) : const Color(0xFFF9FAFB),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark ? theme.dividerColor : Colors.grey[300]!,
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: DropdownButton<String>(
+            value: _selectedModel,
+            isExpanded: true,
+            underline: const SizedBox(),
+            icon: Icon(
+              Icons.keyboard_arrow_down,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+            dropdownColor: isDark ? const Color(0xFF1F2937) : Colors.white,
+            style: TextStyle(
+              fontSize: 15,
+              color: isDark ? Colors.grey[100] : Colors.black87,
+            ),
+            items: models.map((model) {
+              return DropdownMenuItem<String>(
+                value: model['value'] as String,
+                child: Row(
+                  children: [
+                    Icon(
+                      model['icon'] as IconData,
+                      size: 20,
+                      color: _selectedModel == model['value']
+                          ? theme.colorScheme.primary
+                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            model['name'] as String,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: isDark ? Colors.grey[100] : Colors.black87,
+                            ),
+                          ),
+                          Text(
+                            model['desc'] as String,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark
+                                  ? Colors.grey[500]
+                                  : Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  _selectedModel = value;
+                });
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 

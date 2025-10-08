@@ -14,16 +14,19 @@ class ApiService {
   /// [imageBytes] - Image file bytes
   /// [fileName] - Image file name
   /// [prompt] - Edit prompt
+  /// [model] - AI model to use (seedream, nano_banana, or flux_dev)
   Future<Job> createJob({
     required Uint8List imageBytes,
     required String fileName,
     required String prompt,
+    String model = 'seedream',
   }) async {
     try {
       final uri = Uri.parse('$baseUrl/api/jobs');
 
       final request = http.MultipartRequest('POST', uri);
       request.fields['prompt'] = prompt;
+      request.fields['model'] = model;
 
       // Determine content type from file extension
       String contentTypeString = 'image/jpeg';

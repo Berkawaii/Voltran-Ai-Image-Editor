@@ -31,14 +31,14 @@ class FalService:
         "flux_dev": "fal-ai/flux/dev/image-to-image"
     }
     
-    def __init__(self, model: str = "flux_dev"):
+    def __init__(self, model: str = "seedream"):
         """
         Initialize FalService with specified model
         
         Args:
             model: Model identifier (seedream, nano_banana, or flux_dev)
         """
-        self.model = self.MODELS.get(model, self.MODELS["flux_dev"])
+        self.model = self.MODELS.get(model, self.MODELS["seedream"])
         logger.info(f"FalService initialized with model: {self.model}")
     
     async def edit_image(
@@ -222,21 +222,21 @@ class FalService:
             raise
 
 
-# Singleton instance
-_fal_service_instance = None
+# Model instances cache
+_fal_service_instances = {}
 
 
-def get_fal_service(model: str = "flux_dev") -> FalService:
+def get_fal_service(model: str = "seedream") -> FalService:
     """
-    Get or create FalService singleton instance
+    Get or create FalService instance for specified model
     
     Args:
-        model: Model to use
+        model: Model to use (seedream, nano_banana, or flux_dev)
         
     Returns:
         FalService instance
     """
-    global _fal_service_instance
-    if _fal_service_instance is None:
-        _fal_service_instance = FalService(model=model)
-    return _fal_service_instance
+    global _fal_service_instances
+    if model not in _fal_service_instances:
+        _fal_service_instances[model] = FalService(model=model)
+    return _fal_service_instances[model]

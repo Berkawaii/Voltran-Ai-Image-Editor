@@ -26,6 +26,7 @@ class Job(Base):
 
     id = Column(String, primary_key=True, index=True)
     prompt = Column(Text, nullable=False)
+    model = Column(String, default="seedream")
     original_image_path = Column(String, nullable=False)
     result_image_url = Column(String, nullable=True)
     status = Column(String, default=JobStatus.PENDING.value)
@@ -45,6 +46,7 @@ class JobResponse(BaseModel):
     """Schema for job response"""
     id: str
     prompt: str
+    model: str = "seedream"
     original_image_path: str
     result_image_url: Optional[str] = None
     status: str

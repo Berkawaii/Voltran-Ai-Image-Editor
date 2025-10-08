@@ -28,6 +28,7 @@ async def process_image_edit(
     job_id: str,
     image_path: str,
     prompt: str,
+    model: str,
     db: Session
 ):
     """
@@ -37,6 +38,7 @@ async def process_image_edit(
         job_id: Job identifier
         image_path: Path to uploaded image
         prompt: Edit prompt
+        model: AI model to use (seedream, nano_banana, or flux_dev)
         db: Database session
     """
     try:
@@ -50,10 +52,10 @@ async def process_image_edit(
         job.updated_at = datetime.utcnow()
         db.commit()
         
-        logger.info(f"Processing job {job_id}")
+        logger.info(f"Processing job {job_id} with model {model}")
         
-        # Get fal service and edit image
-        fal_service = get_fal_service()
+        # Get fal service with specified model and edit image
+        fal_service = get_fal_service(model=model)
         result = await fal_service.edit_image(
             image_path=image_path,
             prompt=prompt
@@ -85,6 +87,7 @@ async def create_job(
     background_tasks: BackgroundTasks,
     image: UploadFile = File(...),
     prompt: str = Form(...),
+    model: str = Form("seedream"),  # Default to seedream-v4
     db: Session = Depends(get_db)
 ):
     """
@@ -93,6 +96,7 @@ async def create_job(
     Args:
         image: Uploaded image file
         prompt: Text description of desired edits
+        model: AI model to use (seedream, nano_banana, or flux_dev) - defaults to seedream
         db: Database session
         
     Returns:
@@ -124,6 +128,7 @@ async def create_job(
         new_job = Job(
             id=job_id,
             prompt=prompt,
+            model=model,
             original_image_path=image_path,
             status=JobStatus.PENDING.value,
             created_at=datetime.utcnow(),
@@ -142,6 +147,7 @@ async def create_job(
             job_id=job_id,
             image_path=image_path,
             prompt=prompt,
+            model=model,
             db=db
         )
         
