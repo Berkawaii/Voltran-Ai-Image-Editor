@@ -12,7 +12,7 @@ A complete, production-ready AI image editing web application built with Flutter
 #### Core Features ✅
 - **Image Upload**: Drag-and-drop or click-to-upload interface
 - **Prompt-Based Editing**: Text input for describing desired edits
-- **AI Processing**: Integration with fal.ai (FLUX dev model)
+- **Image Processing**: Integration with fal.ai (Seedream V4, Nano Banana, FLUX Dev models)
 - **Result Display**: View edited images in high quality
 - **Download**: Save edited images locally
 - **Job Management**: Track status of editing jobs
@@ -22,9 +22,12 @@ A complete, production-ready AI image editing web application built with Flutter
 #### Bonus Features ✅
 - **Dark/Light Theme**: Toggle between dark and light modes
 - **Multi-language Support**: Turkish and English localization
+- **AI Model Selection**: Choose between Seedream V4, Nano Banana, or FLUX Dev
+- **Private History**: Session-based job history (localStorage, device-specific)
 - **Version History**: See all previous edits with metadata
 - **Before/After Slider**: Interactive comparison tool
 - **Real-time Status**: Live job status updates with polling
+- **Auto-scroll**: Smooth navigation to results when selecting from history
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Error Handling**: Comprehensive error messages and recovery
 - **CI/CD Pipeline**: Automated deployment with GitHub Actions
@@ -54,7 +57,8 @@ Voltran/
     │   │   ├── theme_provider.dart    # Theme management
     │   │   └── locale_provider.dart   # Localization
     │   ├── services/
-    │   │   └── api_service.dart  # HTTP client
+    │   │   ├── api_service.dart       # HTTP client
+    │   │   └── storage_service.dart   # localStorage for job history
     │   ├── screens/
     │   │   └── home_screen.dart  # Main UI
     │   └── widgets/
@@ -75,7 +79,7 @@ Voltran/
 - **Frontend**: Firebase Hosting with GitHub Actions CI/CD
 - **Backend**: Render.com free tier
 - **Database**: SQLite (ephemeral on Render.com)
-- **Image Processing**: fal.ai FLUX dev model
+- **AI Models**: fal.ai (Seedream V4, Nano Banana, FLUX Dev)
 
 ## 🚀 Local Setup
 
@@ -137,6 +141,7 @@ Create a new image editing job
 - **Request**: multipart/form-data
   - `image`: File (required)
   - `prompt`: String (required)
+  - `model`: String (optional, default: "seedream") - Options: "seedream", "nano_banana", "flux_dev"
 - **Response**: Job object with job_id
 
 ### GET /api/jobs/{job_id}
@@ -153,19 +158,20 @@ Delete a job and its associated files
 
 ## 🤖 fal.ai Integration
 
-**Model Used**: `fal-ai/flux/dev/image-to-image`
+**Models Available**:
+1. **Seedream V4** (Default): `fal-ai/bytedance/seedream/v4/edit` - Fast and efficient image editing
+2. **Nano Banana**: `fal-ai/nano-banana/edit` - Quick edits with smaller model
+3. **FLUX Dev**: `fal-ai/flux/dev/image-to-image` - Advanced image-to-image transformation
 
-This model provides high-quality image-to-image transformations based on text prompts. The implementation:
+The implementation:
 
 1. Converts uploaded images to base64 for API transmission
-2. Submits async jobs to fal.ai
+2. Submits async jobs to fal.ai with selected model
 3. Polls for completion status
 4. Stores result URLs in database
 5. Provides download functionality
 
-**Alternative Models** (configured but not used):
-- `fal-ai/seedream-v4`: For faster processing
-- `fal-ai/nano-banana`: For lightweight edits
+**Model Selection**: Users can choose their preferred AI model from the frontend interface with localized descriptions in English and Turkish.
 
 ## 🔧 Tech Stack
 
@@ -207,7 +213,7 @@ The backend is automatically deployed from the `main` branch using `render.yaml`
 - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 - **Environment Variables**:
   - `FAL_API_KEY`: Your fal.ai API key
-  - `ALLOWED_ORIGINS`: `*` (configured for CORS)
+  - `ALLOWED_ORIGINS`: Production domains (configured for Firebase Hosting)
 
 **Health Check**: https://voltran-ai-image-editor.onrender.com/health
 
@@ -235,16 +241,17 @@ firebase deploy --only hosting
 
 ## 🎯 Usage Examples
 
-1. **Upload an image** by clicking or dragging
-2. **Enter a prompt**: 
+1. **Select AI Model**: Choose between Seedream V4 (fast), Nano Banana (quick), or FLUX Dev (advanced)
+2. **Upload an image** by clicking or dragging
+3. **Enter a prompt**: 
    - "Add a sunset background"
    - "Make it look like an oil painting"
    - "Change the color scheme to blue tones"
    - "Add dramatic lighting"
-3. **Click Generate Edit** and wait for AI processing
-4. **View results** with before/after comparison
-5. **Download** the edited image
-6. **Check history** to see all previous edits
+4. **Click Generate Edit** and wait for AI processing
+5. **View results** with before/after comparison (auto-scrolls to result)
+6. **Download** the edited image
+7. **Check history** to see your previous edits (private to your device)
 
 ## 🧪 Testing
 
@@ -295,9 +302,10 @@ This project was developed with assistance from **GitHub Copilot** in the follow
 ### Current Limitations
 1. **File Storage**: Images stored locally (would use S3/CDN in production)
 2. **Job Polling**: Client-side polling (would use WebSockets in production)
-3. **Authentication**: No user authentication (would add JWT/OAuth)
+3. **Authentication**: No user authentication (session-based via localStorage currently)
 4. **Rate Limiting**: No API rate limiting implemented
 5. **Image Size**: Large images may take longer to process
+6. **History Persistence**: Job history is device-specific (would add cloud sync with auth)
 
 ### Production Considerations
 - Add caching layer (Redis) for frequent queries
@@ -310,7 +318,8 @@ This project was developed with assistance from **GitHub Copilot** in the follow
 ## 🔐 Security Notes
 
 - **API Key**: Stored in `.env` file (never commit to version control)
-- **CORS**: Configured for localhost (update for production domains)
+- **CORS**: Configured for production Firebase Hosting domain
+- **Private History**: Job history stored locally in browser (localStorage)
 - **File Validation**: Image type validation in backend
 - **SQL Injection**: Protected by SQLAlchemy ORM
 - **XSS**: Protected by Flutter's rendering engine
