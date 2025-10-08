@@ -144,13 +144,13 @@ class FalService:
         # Add model-specific parameters
         if "seedream" in self.model:
             arguments = {
-                "image_url": image_url,
+                "image_urls": [image_url],  # Seedream expects array of image URLs
                 "prompt": prompt,
                 "num_inference_steps": kwargs.get("num_inference_steps", 50),
             }
         elif "nano-banana" in self.model:
             arguments = {
-                "image_url": image_url,
+                "image_urls": [image_url],  # Nano Banana expects array of image URLs
                 "prompt": prompt,
             }
         
