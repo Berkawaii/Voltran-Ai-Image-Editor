@@ -10,11 +10,11 @@ class StorageService {
     try {
       final storage = html.window.localStorage;
       final jobsJson = storage[_jobsKey];
-      
+
       if (jobsJson == null || jobsJson.isEmpty) {
         return [];
       }
-      
+
       final List<dynamic> jobsList = json.decode(jobsJson);
       return jobsList.map((e) => e.toString()).toList();
     } catch (e) {
@@ -27,11 +27,11 @@ class StorageService {
   static void addJobId(String jobId) {
     try {
       final currentJobs = getUserJobIds();
-      
+
       // Avoid duplicates
       if (!currentJobs.contains(jobId)) {
         currentJobs.add(jobId);
-        
+
         final storage = html.window.localStorage;
         storage[_jobsKey] = json.encode(currentJobs);
       }
@@ -45,7 +45,7 @@ class StorageService {
     try {
       final currentJobs = getUserJobIds();
       currentJobs.remove(jobId);
-      
+
       final storage = html.window.localStorage;
       storage[_jobsKey] = json.encode(currentJobs);
     } catch (e) {

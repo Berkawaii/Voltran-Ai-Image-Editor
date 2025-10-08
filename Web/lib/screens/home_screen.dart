@@ -23,6 +23,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
   final TextEditingController _promptController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _resultSectionKey = GlobalKey();
 
   Uint8List? _selectedImageBytes;
   String? _selectedImageName;
@@ -36,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _promptController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -152,6 +155,18 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedImageBytes = null;
       _selectedImageName = null;
     });
+
+    // Scroll to result section after a short delay to ensure layout is complete
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (_resultSectionKey.currentContext != null) {
+        Scrollable.ensureVisible(
+          _resultSectionKey.currentContext!,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          alignment: 0.0, // Scroll to top of the widget
+        );
+      }
+    });
   }
 
   Widget _buildResultSection() {
@@ -165,6 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_isProcessing) {
       return Container(
+        key: _resultSectionKey, // Add key for scrolling
         decoration: BoxDecoration(
           color: isDark ? theme.colorScheme.surface : Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -216,6 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_currentJob!.isCompleted && _currentJob!.resultImageUrl != null) {
       return Container(
+        key: _resultSectionKey, // Add key for scrolling
         decoration: BoxDecoration(
           color: isDark ? theme.colorScheme.surface : Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -571,6 +588,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Expanded(
           flex: 2,
           child: SingleChildScrollView(
+            controller: _scrollController,
             padding: const EdgeInsets.all(32.0),
             child: Center(
               child: ConstrainedBox(
@@ -625,6 +643,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMobileLayout() {
     final locale = AppLocalizations.of(context);
     return SingleChildScrollView(
+      controller: _scrollController,
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -34,13 +34,13 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
 
     try {
       final response = await _apiService.listJobs();
-      
+
       // Filter jobs to show only user's own jobs
       final userJobIds = StorageService.getUserJobIds();
       final userJobs = response.jobs
           .where((job) => userJobIds.contains(job.id))
           .toList();
-      
+
       setState(() {
         _jobs = userJobs;
         _isLoading = false;
@@ -177,7 +177,9 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
                             locale.privateHistory,
                             style: TextStyle(
                               fontSize: 12,
-                              color: isDark ? Colors.grey[500] : Colors.grey[600],
+                              color: isDark
+                                  ? Colors.grey[500]
+                                  : Colors.grey[600],
                             ),
                           ),
                         ],
