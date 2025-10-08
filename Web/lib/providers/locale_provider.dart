@@ -58,6 +58,8 @@ class AppLocalizations {
       'after': 'AFTER',
       'history': 'History',
       'job_history': 'Job History',
+      'your_edits': 'Your Edits',
+      'private_history': 'Only visible to you on this device',
       'no_jobs': 'No jobs yet',
       'create_first': 'Create your first edit!',
       'error_loading': 'Error loading history',
@@ -108,6 +110,8 @@ class AppLocalizations {
       'after': 'SONRA',
       'history': 'Geçmiş',
       'job_history': 'İş Geçmişi',
+      'your_edits': 'Düzenlemeleriniz',
+      'private_history': 'Sadece bu cihazda size görünür',
       'no_jobs': 'Henüz iş yok',
       'create_first': 'İlk düzenlemenizi oluşturun!',
       'error_loading': 'Geçmiş yüklenirken hata',
@@ -160,6 +164,8 @@ class AppLocalizations {
   String get after => translate('after');
   String get history => translate('history');
   String get jobHistory => translate('job_history');
+  String get yourEdits => translate('your_edits');
+  String get privateHistory => translate('private_history');
   String get noJobs => translate('no_jobs');
   String get createFirst => translate('create_first');
   String get errorLoading => translate('error_loading');

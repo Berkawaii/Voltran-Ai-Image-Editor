@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/job.dart';
 import '../services/api_service.dart';
+import '../services/storage_service.dart';
 import '../providers/locale_provider.dart';
 
 /// Widget to display job history
@@ -33,8 +34,15 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
 
     try {
       final response = await _apiService.listJobs();
+      
+      // Filter jobs to show only user's own jobs
+      final userJobIds = StorageService.getUserJobIds();
+      final userJobs = response.jobs
+          .where((job) => userJobIds.contains(job.id))
+          .toList();
+      
       setState(() {
-        _jobs = response.jobs;
+        _jobs = userJobs;
         _isLoading = false;
       });
     } catch (e) {
@@ -123,30 +131,56 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? theme.colorScheme.primary.withOpacity(0.2)
-                            : const Color(0xFFEEF2FF),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        Icons.history,
-                        color: theme.colorScheme.primary,
-                        size: 20,
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? theme.colorScheme.primary.withOpacity(0.2)
+                                : const Color(0xFFEEF2FF),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.history,
+                            color: theme.colorScheme.primary,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          locale.yourEdits,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? Colors.grey[100]
+                                : const Color(0xFF1F2937),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      locale.jobHistory,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? Colors.grey[100]
-                            : const Color(0xFF1F2937),
+                    const SizedBox(height: 6),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 48),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.lock_outline,
+                            size: 14,
+                            color: isDark ? Colors.grey[500] : Colors.grey[600],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            locale.privateHistory,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? Colors.grey[500] : Colors.grey[600],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

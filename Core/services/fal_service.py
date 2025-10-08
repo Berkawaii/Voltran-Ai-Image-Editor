@@ -26,9 +26,9 @@ class FalService:
     
     # Available models
     MODELS = {
-        "seedream": "fal-ai/seedream-v4",
-        "nano_banana": "fal-ai/nano-banana",
-        "flux_dev": "fal-ai/flux/dev/image-to-image"
+        "seedream": "fal-ai/bytedance/seedream/v4/edit",
+        "nano_banana": "fal-ai/nano-banana/edit",
+        "flux_dev": "fal-ai/flux-1/dev/image-to-image"
     }
     
     def __init__(self, model: str = "seedream"):

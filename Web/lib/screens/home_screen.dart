@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/job.dart';
 import '../services/api_service.dart';
+import '../services/storage_service.dart';
 import '../widgets/image_upload_widget.dart';
 import '../widgets/job_history_widget.dart';
 import '../widgets/before_after_slider.dart';
@@ -72,6 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
         prompt: _promptController.text.trim(),
         model: _selectedModel,
       );
+
+      // Save job ID to localStorage for user's history
+      StorageService.addJobId(job.id);
 
       setState(() {
         _currentJob = job;
