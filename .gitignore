@@ -1,0 +1,54 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# IntelliJ
+*.iml
+.idea/
+
+# VSCode
+.vscode/
+
+# Backend
+Core/venv/
+Core/__pycache__/
+Core/*.db
+Core/uploads/
+Core/.env
+
+# Root level
+*.db
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
