@@ -1,4 +1,7 @@
-# AI Image Editor - Flutter Web + FastAPI
+# Voltran - AI Image Editor
+
+**🌐 Live Demo:** https://voltran-ai-image-editor.web.app/  
+**🔗 Backend API:** https://voltran-ai-image-editor.onrender.com
 
 ## 🎨 Project Overview
 
@@ -6,7 +9,7 @@ A complete, production-ready AI image editing web application built with Flutter
 
 ### ✨ Key Features
 
-#### Required Features ✅
+#### Core Features ✅
 - **Image Upload**: Drag-and-drop or click-to-upload interface
 - **Prompt-Based Editing**: Text input for describing desired edits
 - **AI Processing**: Integration with fal.ai (FLUX dev model)
@@ -17,11 +20,14 @@ A complete, production-ready AI image editing web application built with Flutter
 - **Database Persistence**: SQLite for job history
 
 #### Bonus Features ✅
+- **Dark/Light Theme**: Toggle between dark and light modes
+- **Multi-language Support**: Turkish and English localization
 - **Version History**: See all previous edits with metadata
 - **Before/After Slider**: Interactive comparison tool
 - **Real-time Status**: Live job status updates with polling
-- **Responsive Design**: Works on desktop and tablets
+- **Responsive Design**: Works on desktop, tablet, and mobile
 - **Error Handling**: Comprehensive error messages and recovery
+- **CI/CD Pipeline**: Automated deployment with GitHub Actions
 
 ## 🏗️ Architecture
 
@@ -44,6 +50,9 @@ Voltran/
     │   ├── main.dart       # App entry point
     │   ├── models/
     │   │   └── job.dart    # Job data models
+    │   ├── providers/
+    │   │   ├── theme_provider.dart    # Theme management
+    │   │   └── locale_provider.dart   # Localization
     │   ├── services/
     │   │   └── api_service.dart  # HTTP client
     │   ├── screens/
@@ -54,6 +63,19 @@ Voltran/
     │       └── before_after_slider.dart
     └── pubspec.yaml        # Flutter dependencies
 ```
+
+## 🌐 Live Deployment
+
+### Production URLs
+- **Frontend (Flutter Web)**: https://voltran-ai-image-editor.web.app/
+- **Backend API**: https://voltran-ai-image-editor.onrender.com
+- **API Documentation**: https://voltran-ai-image-editor.onrender.com/docs
+
+### Deployment Stack
+- **Frontend**: Firebase Hosting with GitHub Actions CI/CD
+- **Backend**: Render.com free tier
+- **Database**: SQLite (ephemeral on Render.com)
+- **Image Processing**: fal.ai FLUX dev model
 
 ## 🚀 Local Setup
 
@@ -78,7 +100,7 @@ pip install -r requirements.txt
 4. **Configure environment**
 ```bash
 cp .env.example .env
-# Edit .env with your fal.ai API key (already configured)
+# Edit .env with your fal.ai API key
 ```
 
 5. **Run the server**
@@ -86,7 +108,7 @@ cp .env.example .env
 python main.py
 ```
 
-Backend will be available at: `http://localhost:8000`
+Backend will be available at: `http://localhost:8000`  
 API documentation: `http://localhost:8000/docs`
 
 ### Frontend Setup
@@ -154,58 +176,61 @@ This model provides high-quality image-to-image transformations based on text pr
 - **fal-client**: Official fal.ai Python SDK
 - **Uvicorn**: ASGI server
 - **Pillow**: Image processing utilities
+- **python-dotenv**: Environment variable management
 
 ### Frontend
-- **Flutter Web**: Cross-platform UI framework
+- **Flutter Web**: Cross-platform UI framework (v3.35.1, Dart 3.9.0)
+- **Provider**: State management for theme and locale
 - **http**: HTTP client for API calls
 - **file_picker**: File upload functionality
 - **flutter_spinkit**: Loading animations
-- **universal_html**: Web-specific utilities
+- **universal_html**: Web-specific utilities and download handling
+- **url_launcher**: Open external links (GitHub profile)
+
+### DevOps
+- **GitHub Actions**: CI/CD pipeline for automated deployment
+- **Firebase Hosting**: Frontend hosting with global CDN
+- **Render.com**: Backend hosting with automatic SSL
+- **Git**: Version control
 
 ## 🌐 Deployment
 
-### Backend Deployment (Render.com)
+### Backend Deployment (Render.com) ✅ Deployed
 
-1. Create a new Web Service on Render.com
-2. Connect your GitHub repository
-3. Configure:
-   - **Build Command**: `pip install -r Core/requirements.txt`
-   - **Start Command**: `cd Core && uvicorn main:app --host 0.0.0.0 --port $PORT`
-   - **Root Directory**: Leave empty or set to `Core`
-4. Add environment variables:
-   - `FAL_API_KEY`: Your fal.ai API key
-   - `DATABASE_URL`: `sqlite:///./jobs.db`
-   - `ALLOWED_ORIGINS`: Your frontend URL
+**Live URL**: https://voltran-ai-image-editor.onrender.com
 
-### Frontend Deployment (Firebase Hosting)
+The backend is automatically deployed from the `main` branch using `render.yaml` configuration.
 
-1. Build Flutter Web
+**Configuration**:
+- **Root Directory**: `Core/`
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- **Environment Variables**:
+  - `FAL_API_KEY`: Your fal.ai API key
+  - `ALLOWED_ORIGINS`: `*` (configured for CORS)
+
+**Health Check**: https://voltran-ai-image-editor.onrender.com/health
+
+### Frontend Deployment (Firebase Hosting) ✅ Deployed
+
+**Live URL**: https://voltran-ai-image-editor.web.app/
+
+The frontend is automatically deployed via GitHub Actions on every push to `main`.
+
+**GitHub Actions Workflow**:
+```yaml
+# Automatically triggered on push to main
+- Flutter 3.35.1 setup
+- Dependencies installation (flutter pub get)
+- Production build (flutter build web --release)
+- Firebase Hosting deployment
+```
+
+**Manual Deployment** (if needed):
 ```bash
 cd Web
-flutter build web
-```
-
-2. Install Firebase CLI
-```bash
-npm install -g firebase-tools
-```
-
-3. Initialize Firebase
-```bash
-firebase init hosting
-# Select web/build/web as public directory
-```
-
-4. Deploy
-```bash
-firebase deploy
-```
-
-**Alternative: Vercel Deployment**
-```bash
-cd Web
-flutter build web
-vercel --prod
+flutter build web --release
+firebase deploy --only hosting
 ```
 
 ## 🎯 Usage Examples
