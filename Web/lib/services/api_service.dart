@@ -7,7 +7,7 @@ import '../models/job.dart';
 /// API service for communicating with the backend
 class ApiService {
   // Backend URL - change this when deploying
-  static const String baseUrl = 'http://localhost:8000';
+  static const String baseUrl = 'https://voltran-ai-image-editor.onrender.com';
 
   /// Create a new image editing job
   ///
