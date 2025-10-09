@@ -18,6 +18,7 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
   final ApiService _apiService = ApiService();
   List<Job> _jobs = [];
   bool _isLoading = false;
+  bool _isServerWakingUp = false;
   String? _error;
 
   @override
@@ -29,6 +30,7 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
   Future<void> _loadJobs() async {
     setState(() {
       _isLoading = true;
+      _isServerWakingUp = false;
       _error = null;
     });
 
@@ -44,12 +46,29 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
       setState(() {
         _jobs = userJobs;
         _isLoading = false;
+        _isServerWakingUp = false;
       });
     } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
+      // Check if it's a server cold start
+      if (e.toString().contains('SERVER_COLD_START')) {
+        setState(() {
+          _isServerWakingUp = true;
+          _isLoading = false;
+          _error = null;
+        });
+        
+        // Retry after 3 seconds
+        await Future.delayed(const Duration(seconds: 3));
+        if (mounted) {
+          _loadJobs();
+        }
+      } else {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+          _isServerWakingUp = false;
+        });
+      }
     }
   }
 
@@ -214,7 +233,73 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
             ),
           ),
           Divider(height: 1, color: theme.dividerColor),
-          if (_isLoading)
+          if (_isServerWakingUp)
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? theme.colorScheme.primary.withOpacity(0.2)
+                              : const Color(0xFFEEF2FF),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.cloud_sync_rounded,
+                          size: 48,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        locale.serverWakingUp,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? Colors.grey[100]
+                              : const Color(0xFF1F2937),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        locale.serverColdStart,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: isDark
+                              ? Colors.grey[400]
+                              : const Color(0xFF6B7280),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: CircularProgressIndicator(
+                          color: theme.colorScheme.primary,
+                          strokeWidth: 3,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        locale.pleaseWait,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark
+                              ? Colors.grey[500]
+                              : Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else if (_isLoading)
             Expanded(
               child: Center(
                 child: Padding(

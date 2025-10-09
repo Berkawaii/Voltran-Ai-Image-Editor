@@ -84,6 +84,9 @@ class AppLocalizations {
       'model_nano_banana_desc': 'Quick edits with smaller model',
       'model_flux_dev': 'FLUX Dev',
       'model_flux_dev_desc': 'Advanced image-to-image transformation',
+      'server_waking_up': 'Server is waking up...',
+      'server_cold_start': 'Free server is starting (30-60 seconds)',
+      'please_wait': 'Please wait a moment',
     },
     'tr': {
       'app_title': 'Yapay Zeka Görsel Editörü',
@@ -136,6 +139,9 @@ class AppLocalizations {
       'model_nano_banana_desc': 'Küçük model ile hızlı düzenlemeler',
       'model_flux_dev': 'FLUX Dev',
       'model_flux_dev_desc': 'Gelişmiş görsel dönüştürme',
+      'server_waking_up': 'Sunucu uyanıyor...',
+      'server_cold_start': 'Ücretsiz sunucu başlatılıyor (30-60 saniye)',
+      'please_wait': 'Lütfen biraz bekleyin',
     },
   };
 
@@ -190,6 +196,9 @@ class AppLocalizations {
   String get modelNanoBananaDesc => translate('model_nano_banana_desc');
   String get modelFluxDev => translate('model_flux_dev');
   String get modelFluxDevDesc => translate('model_flux_dev_desc');
+  String get serverWakingUp => translate('server_waking_up');
+  String get serverColdStart => translate('server_cold_start');
+  String get pleaseWait => translate('please_wait');
 }
 
 class _AppLocalizationsDelegate

@@ -88,7 +88,9 @@ class ApiService {
   Future<JobListResponse> listJobs({int skip = 0, int limit = 100}) async {
     try {
       final uri = Uri.parse('$baseUrl/api/jobs?skip=$skip&limit=$limit');
-      final response = await http.get(uri);
+      final response = await http.get(uri).timeout(
+        const Duration(seconds: 60), // Longer timeout for cold start
+      );
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body) as Map<String, dynamic>;
@@ -97,6 +99,11 @@ class ApiService {
         throw Exception('Failed to list jobs: ${response.body}');
       }
     } catch (e) {
+      if (e.toString().contains('TimeoutException') || 
+          e.toString().contains('SocketException') ||
+          e.toString().contains('Failed host lookup')) {
+        throw Exception('SERVER_COLD_START');
+      }
       throw Exception('Error listing jobs: $e');
     }
   }
