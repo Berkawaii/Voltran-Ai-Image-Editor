@@ -56,7 +56,7 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
           _isLoading = false;
           _error = null;
         });
-        
+
         // Retry after 3 seconds
         await Future.delayed(const Duration(seconds: 3));
         if (mounted) {
@@ -289,9 +289,7 @@ class _JobHistoryWidgetState extends State<JobHistoryWidget> {
                         locale.pleaseWait,
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark
-                              ? Colors.grey[500]
-                              : Colors.grey[600],
+                          color: isDark ? Colors.grey[500] : Colors.grey[600],
                         ),
                       ),
                     ],
